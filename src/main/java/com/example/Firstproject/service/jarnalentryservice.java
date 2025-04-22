@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,8 +16,12 @@ public class jarnalentryservice {
     @Autowired
     private jarnalentryrepository jarnalentryrepository;
 
-    public void savejarnalentry(jornalentry jarnalentry) {
+    public void savejarnalentry(jornalentry jarnalentry, String username) {
         jarnalentryrepository.save(jarnalentry);
+        User user = Userservice.findbyusername(username) ;
+        jarnalentryrepository.save(jarnalentry);
+
+       jornalentry.setDate(LocalDateTime);
 
     }
     public List<jornalentry> Getall(){

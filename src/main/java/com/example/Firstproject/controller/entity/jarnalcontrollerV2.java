@@ -1,4 +1,6 @@
 package com.example.Firstproject.controller.entity;
+import com.example.Firstproject.Repository.Userrepository;
+import com.example.Firstproject.service.Userservice;
 import org.bson.types.ObjectId;
 
 import com.example.Firstproject.Repository.jarnalentryrepository;
@@ -8,9 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 @RestController
@@ -21,6 +20,8 @@ public class jarnalcontrollerV2 {
     private jarnalentryservice jarnalentryservice;
     @Autowired
     private jarnalentryrepository jarnalentryrepository;
+    @Autowired
+    private Userrepository userrepository;
 
 
     @GetMapping
@@ -30,14 +31,18 @@ public class jarnalcontrollerV2 {
 
     }
 
-    @PostMapping
-    public jornalentry createjornalentry (@RequestBody jornalentry myentity){
-        myentity.setDate(LocalDateTime.now());
-        jarnalentryservice.savejarnalentry(myentity);
+    @PostMapping ("{userName}")
+    public ResponseEntity<jornalentry> createEntry (@RequestBody jornalentry myEntry, @PathVariable String userName) {
+        try {
 
-        return myentity; 
-
+//        User user = Userservice.findbyusername(userName) ;
+            jarnalentryservice.savejarnalentry (myEntry , userName ); ;
+        return new ResponseEntity<>(myEntry, HttpStatus.CREATED) ;
     }
+        catch (Exception e) {
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+}
     @GetMapping("/id/{myid}")
     public ResponseEntity<jornalentry> getjornalentry(@PathVariable ObjectId myid){
         Optional<jornalentry> jornalentry = jarnalentryrepository.findById(myid);
@@ -55,15 +60,15 @@ public class jarnalcontrollerV2 {
 
     }
 
-    @PutMapping("/id/{id}")
-    public jornalentry updatejornalentry(@PathVariable ObjectId id , @RequestBody jornalentry newentry){
-        jornalentry old =jarnalentryservice.findid(id).orElse(null);
-
-        if ( old != null ){
-            old.setTitle(newentry.getTitle() != null && ! newentry.getTitle().equals("")? newentry.getTitle() : old.getTitle());
-            old.setContent(newentry.getContent() != null &&!  newentry.getContent().equals("")? newentry.getContent() : old.getContent());
-        }
-        jarnalentryservice.savejarnalentry(newentry);
-     return old ;
-    }
+//    @PutMapping("/id/{id}")
+//    public jornalentry updatejornalentry(@PathVariable ObjectId id , @RequestBody jornalentry newentry){
+//        jornalentry old =jarnalentryservice.findid(id).orElse(null);
+//
+//        if ( old != null ){
+//            old.setTitle(newentry.getTitle() != null && ! newentry.getTitle().equals("")? newentry.getTitle() : old.getTitle());
+//            old.setContent(newentry.getContent() != null &&!  newentry.getContent().equals("")? newentry.getContent() : old.getContent());
+//        }
+//        jarnalentryservice.savejarnalentry(newentry, user);
+//     return old ;
+//    }
 }
