@@ -16,12 +16,15 @@ public class jarnalentryservice {
     @Autowired
     private jarnalentryrepository jarnalentryrepository;
 
+    @Autowired
+    private Userservice userservice;
+
     public void savejarnalentry(jornalentry jarnalentry, String username) {
         jarnalentryrepository.save(jarnalentry);
         User user = Userservice.findbyusername(username) ;
         jarnalentryrepository.save(jarnalentry);
 
-       jornalentry.setDate(LocalDateTime);
+       jarnalentry.setDate(LocalDateTime.now());
 
     }
     public List<jornalentry> Getall(){
